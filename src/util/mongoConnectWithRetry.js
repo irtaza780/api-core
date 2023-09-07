@@ -16,29 +16,43 @@ const mongoInitialConnectRetries = 10;
  * @return {Object} Client
  */
 export default function mongoConnectWithRetry(url) {
-  return promiseRetry((retry, number) => {
-    if (number > 1) {
-      Logger.info(`Retrying connect to MongoDB... (${number - 1} of ${mongoInitialConnectRetries})`);
-    } else {
-      Logger.info("Connecting to MongoDB...");
-    }
-
-    return MongoClient.connect(url, {
-      useNewUrlParser: true,
-      useUnifiedTopology: config.MONGO_USE_UNIFIED_TOPOLOGY
-    }).then((client) => {
-      Logger.info(`Connected to MongoDB. Database name: ${client.db().databaseName}`);
-      return client;
-    }).catch((error) => {
-      if (error.name === "MongoNetworkError") {
-        retry(error);
+  console.log("Mongo url is ", process.env.MONGO_URL);
+  return promiseRetry(
+    (retry, number) => {
+      if (number > 1) {
+        Logger.info(
+          `Retrying connect to MongoDB... (${
+            number - 1
+          } of ${mongoInitialConnectRetries})`
+        );
       } else {
-        throw error;
+        Logger.info("Connecting to MongoDB...");
       }
-    });
-  }, {
-    factor: 1,
-    minTimeout: 3000,
-    retries: mongoInitialConnectRetries
-  }).catch((error) => { throw error; });
+
+      return MongoClient.connect(process.env.MONGO_URL, {
+        useNewUrlParser: true,
+        useUnifiedTopology: config.MONGO_USE_UNIFIED_TOPOLOGY,
+      })
+        .then((client) => {
+          Logger.info(
+            `Connected to MongoDB. Database name: ${client.db().databaseName}`
+          );
+          return client;
+        })
+        .catch((error) => {
+          if (error.name === "MongoNetworkError") {
+            retry(error);
+          } else {
+            throw error;
+          }
+        });
+    },
+    {
+      factor: 1,
+      minTimeout: 3000,
+      retries: mongoInitialConnectRetries,
+    }
+  ).catch((error) => {
+    throw error;
+  });
 }

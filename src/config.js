@@ -18,7 +18,7 @@ export default envalid.cleanEnv(
     GRAPHQL_INTROSPECTION_ENABLED: bool({ default: false, devDefault: true }),
     GRAPHQL_PLAYGROUND_ENABLED: bool({ default: false, devDefault: true }),
     MONGO_URL: str({
-      devDefault: process.env.MONGO_URL,
+      devDefault: "mongodb://localhost:27017/reaction",
       desc: "A valid MongoDB connection string URI, ending with the database name",
       example: "mongodb://localhost:27017/reaction",
     }),

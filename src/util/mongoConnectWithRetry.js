@@ -16,7 +16,7 @@ const mongoInitialConnectRetries = 10;
  * @return {Object} Client
  */
 export default function mongoConnectWithRetry(url) {
-  console.log("Mongo url is ", process.env.MONGO_URL);
+  console.log("Mongo url is updated ", process.env.MONGO_URL);
   return promiseRetry(
     (retry, number) => {
       if (number > 1) {

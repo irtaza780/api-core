@@ -43,7 +43,7 @@ export default envalid.cleanEnv(
       desc: "Set this to true if you need Apollo Federation support.",
     }),
     REACTION_GRAPHQL_SUBSCRIPTIONS_ENABLED: bool({
-      default: false,
+      default: true,
       desc: "Set this to false if you do not need GraphQL subscription support",
     }),
     REACTION_SHOULD_INIT_REPLICA_SET: bool({
